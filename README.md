@@ -37,13 +37,21 @@ This plugin is built using the [OBS Plugin Template](https://github.com/obsproje
 
 | Platform  | Tool   |
 |-----------|--------|
+| Windows   | Visual Studio 17 2022 |
+| Windows   | CMake 3.30.5+ |
 | macOS     | XCode 16.0+ |
 | macOS     | CMake 3.30.5+ |
 | macOS     | Homebrew (recommended) |
+| Ubuntu 24.04 | CMake 3.28.3+ |
+| Ubuntu 24.04 | `ninja-build` |
+| Ubuntu 24.04 | `pkg-config` |
+| Ubuntu 24.04 | `build-essential` |
 
 ### Build Instructions
 
-#### Method 1: Using CMake Presets (Recommended)
+#### macOS
+
+**Method 1: Using CMake Presets (Recommended)**
 
 ```bash
 # Clone and navigate to the repository
@@ -56,7 +64,7 @@ cmake --preset macos
 cmake --build build_macos --config Release
 ```
 
-#### Method 2: Manual CMake Configuration
+**Method 2: Manual CMake Configuration**
 
 ```bash
 # Create build directory
@@ -76,13 +84,88 @@ cd build
 xcodebuild -configuration Release
 ```
 
+#### Windows
+
+**Method 1: Using CMake Presets (Recommended)**
+
+```powershell
+# Clone and navigate to the repository
+cd AudioInspector
+
+# Configure using preset
+cmake --preset windows-x64
+
+# Build
+cmake --build build_x64 --config Release
+```
+
+**Method 2: Manual CMake Configuration**
+
+```powershell
+# Create build directory
+mkdir build
+cd build
+
+# Configure with Visual Studio
+cmake -G "Visual Studio 17 2022" -A x64 ..
+
+# Build
+cmake --build . --config Release
+```
+
+Or open the generated solution in Visual Studio and build from the IDE.
+
+#### Linux (Ubuntu)
+
+**Method 1: Using CMake Presets (Recommended)**
+
+```bash
+# Clone and navigate to the repository
+cd AudioInspector
+
+# Install dependencies
+sudo apt install cmake ninja-build pkg-config build-essential
+
+# Configure using preset
+cmake --preset ubuntu-x86_64
+
+# Build
+cmake --build build_x86_64 --config RelWithDebInfo
+```
+
+**Method 2: Manual CMake Configuration**
+
+```bash
+# Create build directory
+mkdir build && cd build
+
+# Configure with Ninja
+cmake -G Ninja ..
+
+# Build
+cmake --build .
+```
+
 ### Installation
 
 After building, the plugin binary will be located in the build output directory. Copy it to your OBS Studio plugins folder:
 
+**macOS**
 ```bash
-# macOS
 cp -r build_macos/Release/AudioInspector.plugin ~/Library/Application\ Support/obs-studio/plugins/
+```
+
+**Windows**
+```powershell
+# Copy to OBS plugins directory (adjust path as needed)
+xcopy /E /I build_x64\Release\AudioInspector.dll "%APPDATA%\obs-studio\plugins\AudioInspector\"
+```
+
+**Linux**
+```bash
+# Copy to user plugins directory
+mkdir -p ~/.config/obs-studio/plugins/AudioInspector
+cp -r build_x86_64/AudioInspector.so ~/.config/obs-studio/plugins/AudioInspector/
 ```
 
 ## Development
